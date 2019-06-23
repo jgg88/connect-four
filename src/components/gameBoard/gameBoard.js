@@ -13,7 +13,6 @@ class GameBoard extends Component {
 
   componentDidMount() {
     const numberArr = Array.apply(null, {length: 42}).map(Number.call, Number);
-
     numberArr.forEach(num => {
       const numObj = {
         id: num,
@@ -21,7 +20,6 @@ class GameBoard extends Component {
       }
       this.setState(prevState => ({slots: [...prevState.slots, numObj]}));
     });
-    
   }
 
   render () {
@@ -98,24 +96,25 @@ class GameBoard extends Component {
     const {red, black, playerOne} = this.state;
     const currentColorArr = playerOne ? black : red;
     const slope = [];
-    const unacceptableSlotNumbers = [0, 1, 2, 7, 8, 14, 27, 33, 34, 39, 40, 41];
+    const unacceptableLeftNumbers = [0, 7, 14, 21, 28, 35];
+    const unacceptableRightNumbers = [6, 13, 20, 27, 34, 41];
 
     slope.push(num)
     if (currentColorArr.length) {
-      if (currentColorArr.includes(num + 6) && !unacceptableSlotNumbers.includes(num + 6)) {
+      if (currentColorArr.includes(num + 6) && !unacceptableRightNumbers.includes(num + 6)) {
         slope.push(num + 6);
-        if (currentColorArr.includes(num + 12) && !unacceptableSlotNumbers.includes(num + 12)) {
+        if (currentColorArr.includes(num + 12) && !unacceptableRightNumbers.includes(num + 12)) {
           slope.push(num + 12);
-          if (currentColorArr.includes(num + 18) && !unacceptableSlotNumbers.includes(num + 18)) {
+          if (currentColorArr.includes(num + 18) && !unacceptableRightNumbers.includes(num + 18)) {
             slope.push(num + 18);
           }
         }
       }
-      if (currentColorArr.includes(num - 6) && !unacceptableSlotNumbers.includes(num - 6)) {
+      if (currentColorArr.includes(num - 6) && !unacceptableLeftNumbers.includes(num - 6)) {
         slope.push(num - 6);
-        if (currentColorArr.includes(num - 12) && !unacceptableSlotNumbers.includes(num - 12)) {
+        if (currentColorArr.includes(num - 12) && !unacceptableLeftNumbers.includes(num - 12)) {
           slope.push(num - 12);
-          if (currentColorArr.includes(num - 18) && !unacceptableSlotNumbers.includes(num - 18)) {
+          if (currentColorArr.includes(num - 18) && !unacceptableLeftNumbers.includes(num - 18)) {
             slope.push(num - 18);
           }
         }
