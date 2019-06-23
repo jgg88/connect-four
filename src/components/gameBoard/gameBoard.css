@@ -1,0 +1,27 @@
+.boardFrame {
+  width: 896px;
+  height: 100vh;
+  background-color: rgb(226, 223, 55);
+}
+
+.boardHoles {
+  width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border-color: black;
+    border-width: 1px;
+    display: inline-block;
+    margin: 14px;
+}
+
+.clear {
+  background-color: #FFFFFF;
+}
+
+.red {
+  background-color: #e2321b;
+}
+
+.black {
+  background-color: #000000;
+}
