@@ -3,168 +3,68 @@ import './gameBoard.css';
 
 class GameBoard extends Component {
   state = {
-    directions: [],
-    slots: [],
-    playerOne: true,
-    occupiedSpaces: [],
-    black: [],
-    red: []
+    columns: [],
   }
 
   componentDidMount() {
-    const numberArr = Array.apply(null, {length: 42}).map(Number.call, Number);
-    numberArr.forEach(num => {
-      const numObj = {
-        id: num,
-        style: 'clear',
-      }
-      this.setState(prevState => ({slots: [...prevState.slots, numObj]}));
-    });
+    let cols = 7;
+    let rows = 6;
+    this.createCells(cols, rows);
   }
 
   render () {
-      const { slots } = this.state;
-      return(
-          <>
-            <div className='boardFrame'>
-              {slots.map(n => (
-                <div 
-                  className={`boardHoles ${n.style}`}
-                  key={n.id}
-                  onClick={() => this.columnHandler(n.id)}
-                  value={n.id}
-                >{n.id}
-                </div>
-              ))}
-            </div>
-          </>
+      const { columns } = this.state;
+      return (
+          <div className='boardFrame'>
+            {columns.map((cols, i) => {
+              return <div className='boardColumn' key={i}>
+                {cols.map(cell => {
+                  return <div 
+                    className={`cells ${cell.style}`}
+                    key={cell.id}
+                    onClick={() => this.addChip(cell.id)}
+                    value={cell.id}
+                  > {cell.id}
+                  </div>
+                })}
+              </div>
+            })}
+          </div>
       )
   }
 
-  columnHandler = num => {
-    const {occupiedSpaces, slots, playerOne, black, red} = this.state;
-    let currentRow = num;
-    const colorName = playerOne ? 'black' : 'red';
-    const currentColorArr = playerOne ? black : red;
-
-    if (occupiedSpaces.includes(currentRow)) {
-      return;
-    } else if (currentRow + 7 <= 41 && !occupiedSpaces.includes(currentRow + 7)) {
-      currentRow = currentRow + 7;
-      return this.columnHandler(currentRow);
-    } else {
-      const slotCopy = slots;
-      slotCopy[currentRow].style = colorName;
-      this.setState({playerOne: !playerOne, slots: slotCopy, [colorName]: [...currentColorArr, currentRow], occupiedSpaces: [...occupiedSpaces, currentRow]});
-      if (this.checkDownwardSlope(currentRow) || this.checkUpwardSlope(currentRow) || this.checkHorizontal(currentRow) || this.checkVertical(currentRow)) {
-        console.log('YOU WOOOOON!!');
-      }
-    };
-  };
-
-  checkDownwardSlope = num => {
-    const {red, black, playerOne} = this.state;
-    const currentColorArr = playerOne ? black : red;
-    const slope = [];
-    const unacceptableSlotNumbers = [4, 5, 6, 12, 13, 20, 21, 28, 29, 35, 36, 37]
-
-    slope.push(num)
-    if (currentColorArr.length) {
-      if (currentColorArr.includes(num + 8) && !unacceptableSlotNumbers.includes(num + 8)) {
-        slope.push(num + 8);
-        if (currentColorArr.includes(num + 16) && !unacceptableSlotNumbers.includes(num + 16)) {
-          slope.push(num + 16);
-          if (currentColorArr.includes(num + 24) && !unacceptableSlotNumbers.includes(num + 24)) {
-            slope.push(num + 24);
-          }
-        }
-      }
-      if (currentColorArr.includes(num - 8) && !unacceptableSlotNumbers.includes(num - 8)) {
-        slope.push(num - 8);
-        if (currentColorArr.includes(num - 16) && !unacceptableSlotNumbers.includes(num - 16)) {
-          slope.push(num - 16);
-          if (currentColorArr.includes(num - 24) && !unacceptableSlotNumbers.includes(num - 24)) {
-            slope.push(num - 24);
-          }
-        }
-      }
-      return slope.length >= 4;
-    }
-  };
-
-  checkUpwardSlope = num => {
-    const {red, black, playerOne} = this.state;
-    const currentColorArr = playerOne ? black : red;
-    const slope = [];
-    const unacceptableLeftNumbers = [0, 7, 14, 21, 28, 35];
-    const unacceptableRightNumbers = [6, 13, 20, 27, 34, 41];
-
-    slope.push(num)
-    if (currentColorArr.length) {
-      if (currentColorArr.includes(num + 6) && !unacceptableRightNumbers.includes(num + 6)) {
-        slope.push(num + 6);
-        if (currentColorArr.includes(num + 12) && !unacceptableRightNumbers.includes(num + 12)) {
-          slope.push(num + 12);
-          if (currentColorArr.includes(num + 18) && !unacceptableRightNumbers.includes(num + 18)) {
-            slope.push(num + 18);
-          }
-        }
-      }
-      if (currentColorArr.includes(num - 6) && !unacceptableLeftNumbers.includes(num - 6)) {
-        slope.push(num - 6);
-        if (currentColorArr.includes(num - 12) && !unacceptableLeftNumbers.includes(num - 12)) {
-          slope.push(num - 12);
-          if (currentColorArr.includes(num - 18) && !unacceptableLeftNumbers.includes(num - 18)) {
-            slope.push(num - 18);
-          }
-        }
-      }
-      return slope.length >= 4;
-    }
+  addChip = cellID => {
+    // TODOs:
+    // 1. check each cell in column for chip, stop at last unoccupied cell, update state with player's chip.
+    // 2. check for win.
+    // 3. return result of win.
   }
 
-  checkHorizontal = num => {
-    const {red, black, playerOne} = this.state;
-    const currentColorArr = playerOne ? black : red;
-    const row = [];
-    const unacceptableLeftNumbers = [0, 7, 14, 21, 28, 35];
-    const unacceptableRightNumbers = [6, 13, 20, 27, 34, 41];
-
-    row.push(num);
-    if (currentColorArr.length) {
-      if (currentColorArr.includes(num + 1) && !unacceptableLeftNumbers.includes(num + 1)) {
-        row.push(num + 1);
-        if (currentColorArr.includes(num + 2)) {
-          row.push(num + 2);
-          if (currentColorArr.includes(num + 3)) {
-            row.push(num + 3);
-          }
-        }
-      }
-      if (currentColorArr.includes(num - 1) && !unacceptableRightNumbers.includes(num - 1)) {
-        row.push(num - 1);
-        if (currentColorArr.includes(num - 2)) {
-          row.push(num - 2);
-          if (currentColorArr.includes(num - 3)) {
-            row.push(num - 3);
-          }
-        }
-      }
-      return row.length >= 4;
+  createCells = (cols, rows) => {
+    let columns = new Array(cols);
+    for (let i = 0; i < columns.length; i++) {
+      columns[i] = new Array(rows);
     }
+
+    for (let i = 1; i <= cols; i++) {
+      for (let j = 1; j <= rows; j++) {
+        columns[i - 1][j - 1] = {
+          id: (j - 1) * cols + i,
+          style: 'clear',
+        };
+      }
+    }
+    this.setState({columns});
+  }
+
+  checkWin = num => {
+    // How to do this? Same as previous, or possiblly:
+    // For loop to iterate through grid, create separate arrays for each type of win (horiz, vert, diag)
+    // then check each array and return arr.length >= 4.
   };
 
-  checkVertical = num => {
-    const {red, black, playerOne} = this.state;
-    const currentColorArr = playerOne ? black : red;
-    if (currentColorArr.includes(num + 7)) {
-      if (currentColorArr.includes(num + 14)) {
-        if (currentColorArr.includes(num + 21)) {
-          return true;
-        }
-      }
-    }
-    return false;
+  newGame = () => {
+    // will run / reset game.
   }
 };
 
