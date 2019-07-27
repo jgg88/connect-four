@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import './gameBoard.css';
+import Players from '../players/players';
+import Winner from '../winner/winner';
 import { MAX_COLS, MAX_ROWS } from '../../constants';
 
 class GameBoard extends Component {
@@ -9,6 +11,7 @@ class GameBoard extends Component {
     playerOne: true,
     black: [],
     red: [],
+    isWinner: false,
   }
 
   componentDidMount() {
@@ -16,32 +19,31 @@ class GameBoard extends Component {
   }
 
   render () {
-      const { columns } = this.state;
+      const { columns, isWinner } = this.state;
       return (
+        <div>
+          {isWinner ? <Winner/> : <Players/>}
           <div className='boardFrame'>
-            {columns.map((cols, i) => {
-              return <div className='boardColumn' key={i}>
-                {cols.map(cell => {
-                  return <div 
-                    className={`cells ${cell.style}`}
-                    key={cell.id}
-                    onClick={() => this.addChip(cell.id)}
-                    value={cell.id}
-                  > {cell.id}
-                  </div>
-                })}
-              </div>
-            })}
+              {columns.map((cols, i) => {
+                return <div className='boardColumn' key={i}>
+                  {cols.map(cell => {
+                    return <div className={'boardCellBorder'} key={cell.id}>
+                      <div 
+                        className={`cells ${cell.style}`}
+                        key={cell.id}
+                        onClick={() => this.addChip(cell.id)}
+                        value={cell.id}
+                      />
+                    </div>
+                  })}
+                </div>
+              })}
+            </div>
           </div>
       )
   }
 
   addChip = cellID => {
-    // TODOs:
-    // 1. *DONE* check each cell in column for chip, stop at last unoccupied cell, update state with player's chip.
-    // 2. *DONE* check for win.
-    // 3. handle result of win.
-
     const { occupiedSpaces, columns, playerOne, black, red } = this.state;
     const colorName = playerOne ? 'black' : 'red';
     const currentColorArr = playerOne ? black : red;
@@ -62,7 +64,9 @@ class GameBoard extends Component {
         });
       });
       this.setState({playerOne: !playerOne, columns: columnsCopy, [colorName]: [...currentColorArr, cellID], occupiedSpaces: [...occupiedSpaces, cellID]});
-      this.checkWin([...currentColorArr, cellID]);
+      if (this.checkWin([...currentColorArr, cellID])) {
+        this.setState({isWinner: true})
+      }
     }
   }
 
@@ -80,7 +84,6 @@ class GameBoard extends Component {
           if (i + k <= MAX_COLS && currentColorArr.includes((j + k) * MAX_COLS + (i + k))) {
             backwardDiagonal++;
             if (backwardDiagonal === 4) {
-              console.log('BACKWARD DIAGONAL WIN'); // TEMP log to display win origin for test
               return true;
             }
             if (k === 3) {
@@ -95,7 +98,6 @@ class GameBoard extends Component {
           if (i + k <= MAX_COLS && currentColorArr.includes((j - k) * MAX_COLS + (i + k))) {
             forwardDiagonal++;
             if (forwardDiagonal === 4) {
-              console.log('FORWARD DIAGONAL WIN'); // TEMP log to display win origin for test
               return true;
             }
             if (k === 3) {
@@ -110,7 +112,6 @@ class GameBoard extends Component {
           if (currentColorArr.includes(j * MAX_COLS + (i + k))) {
             horizontal++;
             if (horizontal === 4) {
-              console.log('HORIZONTAL WIN');
               return true;
             }
             if (k === 3) {
@@ -125,7 +126,6 @@ class GameBoard extends Component {
           if (currentColorArr.includes((j + k) * MAX_COLS + i)) {
             vertical++;
             if (vertical === 4) {
-              console.log('VERTICAL WIN');
               return true;
             }
             if (k === 3) {
