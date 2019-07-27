@@ -39,7 +39,7 @@ class GameBoard extends Component {
   addChip = cellID => {
     // TODOs:
     // 1. *DONE* check each cell in column for chip, stop at last unoccupied cell, update state with player's chip.
-    // 2. check for win.
+    // 2. *DONE* check for win.
     // 3. handle result of win.
 
     const { occupiedSpaces, columns, playerOne, black, red } = this.state;
@@ -67,38 +67,78 @@ class GameBoard extends Component {
   }
 
   checkWin = (currentColorArr) => {
-    // How to do this? Same as previous, or possiblly:
-    // For loop to iterate through grid, create separate arrays for each type of win (horiz, vert, diag)
-    // then check each array and return arr.length >= 4.
+    let backwardDiagonal = 0;
+    let forwardDiagonal = 0;
+    let horizontal = 0;
+    let vertical = 0;
 
-    const { occupiedSpaces, columns } = this.state;
-    let diagonalForward = 0;
-    for (let i = 0; i < MAX_COLS; i++) {
+    for (let i = 1; i <= MAX_COLS; i++) {
       for (let j = 0; j < MAX_ROWS; j++) {
-        for (let k = 0; k <= 3; k++) {
-          if (i + k <= MAX_COLS && currentColorArr.includes(((j + k) - 1) * MAX_COLS + (i + k))) {
-            diagonalForward++;
-            if (diagonalForward === 4) {
-              console.log('YOU WIN!!!');
+        for (let k = 0; k <= 3; k++) {  
+          // Check for backward diagonal
+          // ============================
+          if (i + k <= MAX_COLS && currentColorArr.includes((j + k) * MAX_COLS + (i + k))) {
+            backwardDiagonal++;
+            if (backwardDiagonal === 4) {
+              console.log('BACKWARD DIAGONAL WIN'); // TEMP log to display win origin for test
               return true;
             }
             if (k === 3) {
-              diagonalForward = 0;
+              backwardDiagonal = 0;
             }
-          } 
-          else {
-            diagonalForward = 0;
+          } else {
+            backwardDiagonal = 0;
           }
 
-        }
+          // Check for forward diagonal
+          // ============================
+          if (i + k <= MAX_COLS && currentColorArr.includes((j - k) * MAX_COLS + (i + k))) {
+            forwardDiagonal++;
+            if (forwardDiagonal === 4) {
+              console.log('FORWARD DIAGONAL WIN'); // TEMP log to display win origin for test
+              return true;
+            }
+            if (k === 3) {
+              forwardDiagonal = 0;
+            }
+          } else {
+            forwardDiagonal = 0;
+          }
+
+          // Check for horizontal win
+          // ============================
+          if (currentColorArr.includes(j * MAX_COLS + (i + k))) {
+            horizontal++;
+            if (horizontal === 4) {
+              console.log('HORIZONTAL WIN');
+              return true;
+            }
+            if (k === 3) {
+              horizontal = 0;
+            }
+          } else {
+            horizontal = 0;
+          }
+
+          // Check for vertical win
+          // ============================
+          if (currentColorArr.includes((j + k) * MAX_COLS + i)) {
+            vertical++;
+            if (vertical === 4) {
+              console.log('VERTICAL WIN');
+              return true;
+            }
+            if (k === 3) {
+              vertical = 0;
+            }
+          }
+           else {
+            vertical = 0;
+          }
+        };
       };
     };
-
-    // Check diagonalBackward
-
-    //vertical
-
-    //horizontal
+    return false;
   }
 
   createCells = () => {
