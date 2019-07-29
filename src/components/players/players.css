@@ -4,7 +4,7 @@
   height: 120px;
   width: 100%;
   font-family: 'Modak', cursive;
-  -webkit-text-fill-color: yellow; /* Will override color (regardless of order) */
+  -webkit-text-fill-color: yellow;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: #a52a2a;
 }

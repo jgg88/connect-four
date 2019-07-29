@@ -1,3 +1,45 @@
+@-webkit-keyframes red_to_clear {
+	0% { background-color: #e67162; }
+	100% { background-color: #defafa; }
+}
+@-moz-keyframes red_to_clear {
+	0% { background-color: #e67162; }
+	100% { background-color: #defafa; }
+}
+@-ms-keyframes red_to_clear {
+	0% { background-color: #e67162; }
+	100% { background-color: #defafa; }
+}
+@-o-keyframes red_to_clear {
+	0% { background-color: #e67162; }
+	100% { background-color: #defafa; }
+}
+@keyframes red_to_clear {
+	0% { background-color: #e67162; }
+	100% { background-color: #defafa; }
+}
+
+@-webkit-keyframes black_to_clear {
+	0% { background-color: #00000071; }
+	100% { background-color: #defafa; }
+}
+@-moz-keyframes black_to_clear {
+	0% { background-color: #00000071; }
+	100% { background-color: #defafa; }
+}
+@-ms-keyframes black_to_clear {
+	0% { background-color: #00000071; }
+	100% { background-color: #defafa; }
+}
+@-o-keyframes black_to_clear {
+	0% { background-color: #00000071; }
+	100% { background-color: #defafa; }
+}
+@keyframes black_to_clear {
+	0% { background-color: #00000071; }
+	100% { background-color: #defafa; }
+}
+
 body {
   background-color: #defafa;
 }
@@ -38,12 +80,55 @@ body {
   background-color: #defafa;
 }
 
+.black {
+  background-color: #000000;
+  border-color: #232222;
+}
+
+.blackToClear {
+	-webkit-animation: black_to_clear .5s 1 normal;
+	-moz-animation: black_to_clear .5s 1 normal;
+	-ms-animation: black_to_clear .5s 1 normal;
+	-o-animation: black_to_clear .5s 1 normal;
+	animation: black_to_clear .5s 1 normal;
+}
+.blackToClear2 {
+	-webkit-animation: black_to_clear .5s 1 normal;
+	-moz-animation: black_to_clear .5s 1 normal;
+	-ms-animation: black_to_clear .5s 1 normal;
+	-o-animation: black_to_clear .5s 1 normal;
+	animation: black_to_clear .5s 1 normal;
+}
+
 .red {
   background-color: #b91500;
   border-color: #d00707;
 }
 
-.black {
-  background-color: #000000;
-    border-color: #232222;
+.redToClear {
+	-webkit-animation: red_to_clear .5s 1 normal;
+	-moz-animation: red_to_clear .5s 1 normal;
+	-ms-animation: red_to_clear .5s 1 normal;
+	-o-animation: red_to_clear .5s 1 normal;
+	animation: red_to_clear .5s 1 normal;
+}
+
+.redToClear2 {
+	-webkit-animation: red_to_clear .5s 1 normal;
+	-moz-animation: red_to_clear .5s 1 normal;
+	-ms-animation: red_to_clear .5s 1 normal;
+	-o-animation: red_to_clear .5s 1 normal;
+	animation: red_to_clear .5s 1 normal;
+}
+
+.highlightWinner {
+  border-radius: 50%;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 70px;
+  width: 70px;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 5px 8px #fff, 0 0 2px 12px #b4e3ff;
 }

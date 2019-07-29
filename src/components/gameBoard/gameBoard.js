@@ -11,7 +11,7 @@ class GameBoard extends Component {
     playerOne: true,
     black: [],
     red: [],
-    isWinner: false,
+    winningPieces: [],
   }
 
   componentDidMount() {
@@ -19,19 +19,20 @@ class GameBoard extends Component {
   }
 
   render () {
-      const { columns, isWinner } = this.state;
+      const { columns, winningPieces } = this.state;
+
       return (
         <div>
-          {isWinner ? <Winner/> : <Players/>}
+          {winningPieces.length ? <Winner/> : <Players/>}
           <div className='boardFrame'>
               {columns.map((cols, i) => {
                 return <div className='boardColumn' key={i}>
                   {cols.map(cell => {
                     return <div className={'boardCellBorder'} key={cell.id}>
-                      <div 
-                        className={`cells ${cell.style}`}
+                      <div
+                        className={`cells ${cell.style} ${winningPieces.includes(cell.id) ? 'highlightWinner' : ''}`}
                         key={cell.id}
-                        onClick={() => this.addChip(cell.id)}
+                        onClick={!winningPieces.length ? () => this.addChip(cell.id) : null}
                         value={cell.id}
                       />
                     </div>
@@ -51,94 +52,102 @@ class GameBoard extends Component {
     if (occupiedSpaces.includes(cellID)) {
       return;
     } else if (cellID + 7 <= 42 && !occupiedSpaces.includes(cellID + 7)) {
+      // TODO: Resolve bug that chips don't animate when color is same as below.
+      // This is because the style has not updated to trigger the css animation a second time.
+      let columnsCopy = columns;
+      columnsCopy.forEach((column, i) => {
+        column.forEach((cell, j) => {
+          if (cell.id === cellID) {
+            cell.style = `clear ${colorName}ToClear`;
+          }
+        });
+      });
       cellID = cellID + 7;
       return this.addChip(cellID);
     } else {
       let columnsCopy = columns;
       columnsCopy.forEach(column => {
-        column.forEach(cell => {
+        column.forEach((cell, i) => {
           if (cell.id === cellID) {
-              cell.style = colorName;
-            }
-            return cell;
+            cell.style = colorName;
+          }
+          return cell;
         });
       });
       this.setState({playerOne: !playerOne, columns: columnsCopy, [colorName]: [...currentColorArr, cellID], occupiedSpaces: [...occupiedSpaces, cellID]});
-      if (this.checkWin([...currentColorArr, cellID])) {
-        this.setState({isWinner: true})
-      }
+      this.setState({winningPieces: this.checkWin([...currentColorArr, cellID])});
     }
   }
 
   checkWin = (currentColorArr) => {
-    let backwardDiagonal = 0;
-    let forwardDiagonal = 0;
-    let horizontal = 0;
-    let vertical = 0;
+    let backwardDiagonal = [];
+    let forwardDiagonal = [];
+    let horizontal = [];
+    let vertical = [];
 
     for (let i = 1; i <= MAX_COLS; i++) {
       for (let j = 0; j < MAX_ROWS; j++) {
-        for (let k = 0; k <= 3; k++) {  
+        for (let k = 0; k <= 3; k++) { 
           // Check for backward diagonal
           // ============================
           if (i + k <= MAX_COLS && currentColorArr.includes((j + k) * MAX_COLS + (i + k))) {
-            backwardDiagonal++;
-            if (backwardDiagonal === 4) {
-              return true;
+            backwardDiagonal.push((j + k) * MAX_COLS + (i + k));
+            if (backwardDiagonal.length === 4) {
+              return backwardDiagonal;
             }
             if (k === 3) {
-              backwardDiagonal = 0;
+              backwardDiagonal = [];
             }
           } else {
-            backwardDiagonal = 0;
+            backwardDiagonal = [];
           }
 
           // Check for forward diagonal
           // ============================
           if (i + k <= MAX_COLS && currentColorArr.includes((j - k) * MAX_COLS + (i + k))) {
-            forwardDiagonal++;
-            if (forwardDiagonal === 4) {
-              return true;
+            forwardDiagonal.push((j - k) * MAX_COLS + (i + k));
+            if (forwardDiagonal.length === 4) {
+              return forwardDiagonal;
             }
             if (k === 3) {
-              forwardDiagonal = 0;
+              forwardDiagonal = [];
             }
           } else {
-            forwardDiagonal = 0;
+            forwardDiagonal = [];
           }
 
           // Check for horizontal win
           // ============================
           if (currentColorArr.includes(j * MAX_COLS + (i + k))) {
-            horizontal++;
-            if (horizontal === 4) {
-              return true;
+            horizontal.push(j * MAX_COLS + (i + k));
+            if (horizontal.length === 4) {
+              return horizontal;
             }
             if (k === 3) {
-              horizontal = 0;
+              horizontal = [];
             }
           } else {
-            horizontal = 0;
+            horizontal = [];
           }
 
           // Check for vertical win
           // ============================
           if (currentColorArr.includes((j + k) * MAX_COLS + i)) {
-            vertical++;
-            if (vertical === 4) {
-              return true;
+            vertical.push((j + k) * MAX_COLS + i);
+            if (vertical.length === 4) {
+              return vertical;
             }
             if (k === 3) {
-              vertical = 0;
+              vertical = [];
             }
           }
            else {
-            vertical = 0;
+            vertical = [];
           }
         };
       };
     };
-    return false;
+    return [];
   }
 
   createCells = () => {
